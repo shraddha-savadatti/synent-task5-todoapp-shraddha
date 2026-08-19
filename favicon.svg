@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Rounded Base Badge -->
+  <rect width="32" height="32" rx="7" fill="#081A2B" />
+  
+  <!-- Subtle Border Ring for Visual Contrast -->
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="6.25" fill="none" stroke="#193552" stroke-width="1.5" />
+
+  <!-- Stylized Geometric "N" Constructed with Precision Strokes -->
+  <g fill="none" stroke="#5CB8FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left Vertical Stem -->
+    <line x1="9.5" y1="8" x2="9.5" y2="24" />
+    
+    <!-- Dynamic Diagonal Stroke -->
+    <line x1="9.5" y1="8" x2="22.5" y2="24" />
+    
+    <!-- Right Vertical Stem -->
+    <line x1="22.5" y1="8" x2="22.5" y2="24" />
+  </g>
+
+  <!-- Accent Focus Indicator Dot -->
+  <circle cx="22.5" cy="8" r="1.5" fill="#8CCBFF" />
+</svg>
