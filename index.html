@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noto — A little space for what's next</title>
+
+  <!-- Modern Geometric Sans Typography: Sora -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ambient background glow layers -->
+  <div class="glow-orb glow-top-right" aria-hidden="true"></div>
+  <div class="glow-orb glow-bottom-left" aria-hidden="true"></div>
+
+  <div class="app-layout">
+    
+    <!-- Top Global Bar -->
+    <header class="app-topbar">
+      <div class="brand-group">
+        <span class="brand-mark"></span>
+        <span class="brand-logo">noto<span class="accent-dot">.</span></span>
+        <span class="brand-divider">|</span>
+        <span class="brand-tagline">A little space for what's next.</span>
+      </div>
+
+      <div class="topbar-meta">
+        <span class="meta-label">TODAY</span>
+        <time id="current-date" class="meta-time">—</time>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Workspace -->
+    <div class="workspace-grid">
+      
+      <!-- Primary Column: Task Creation & Ledger List -->
+      <main class="primary-column">
+        
+        <div class="hero-block">
+          <h1 class="hero-title">What's next<span class="accent-dot">?</span></h1>
+          <p class="hero-desc">Keep the little things moving.</p>
+        </div>
+
+        <!-- Sleek Custom Composer Form -->
+        <form id="task-form" class="task-composer" novalidate>
+          <label for="task-input" class="sr-only">Add a task</label>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">+</span>
+            <input 
+              type="text" 
+              id="task-input" 
+              name="task" 
+              class="composer-field" 
+              placeholder="What's on your list?" 
+              autocomplete="off" 
+              required
+            />
+            <button type="submit" class="composer-submit-btn" aria-label="Add task to list">
+              <span>Add</span>
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Dynamic Task Feed -->
+        <section class="task-feed" aria-label="Task Entries">
+          <ol id="task-list" class="task-list">
+            <!-- Rendered by script.js -->
+          </ol>
+
+          <!-- Minimalist Empty State -->
+          <div id="empty-state" class="empty-state" hidden>
+            <div class="empty-vector" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 8v4l2.5 2.5"></path>
+              </svg>
+            </div>
+            <p class="empty-title">Nothing here yet.</p>
+            <p class="empty-subtitle">Add something small to get started.</p>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Secondary Column: Real-Time Stats & Quick Filters -->
+      <aside class="secondary-column">
+        <div class="sticky-panel">
+          
+          <!-- Statistics Widget -->
+          <section class="panel-section" aria-label="Task Analytics">
+            <h2 class="panel-heading">Metrics</h2>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span id="active-count" class="metric-number">0</span>
+                <span class="metric-label">Remaining</span>
+              </div>
+              <div class="metric-card">
+                <span id="completed-count" class="metric-number">0</span>
+                <span class="metric-label">Completed</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Integrated Filter List -->
+          <section class="panel-section" aria-label="View Filters">
+            <h2 class="panel-heading">Filter View</h2>
+            <div class="filter-list" role="tablist">
+              <button type="button" class="filter-link is-active" data-filter="all" role="tab" aria-selected="true">
+                <span class="filter-link-label">All</span>
+                <span class="filter-badge" id="count-all">0</span>
+              </button>
+              <button type="button" class="filter-link" data-filter="active" role="tab" aria-selected="false">
+                <span class="filter-link-label">Active</span>
+                <span class="filter-badge" id="count-active">0</span>
+              </button>
+              <button type="button" class="filter-link" data-filter="completed" role="tab" aria-selected="false">
+                <span class="filter-link-label">Completed</span>
+                <span class="filter-badge" id="count-completed">0</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Maintenance / Actions -->
+          <div class="panel-footer">
+            <button type="button" id="clear-completed-btn" class="clear-btn">
+              <span>Clear completed tasks</span>
+              <span class="clear-icon">×</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

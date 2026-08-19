@@ -1,0 +1,683 @@
+/* ==========================================================================
+   Noto — Cool Navy / Tech Professional Theme Tokens
+   ========================================================================== */
+:root {
+  /* Canvas & Midnight Navy Bases */
+  --navy-bg: #091726;
+  --navy-surface: #0E2238;
+  --navy-surface-hover: #142F4C;
+  --navy-panel: #0D2034;
+  --navy-row-hover: #112841;
+
+  /* Blue Accents */
+  --blue-primary: #4DA3FF;
+  --blue-accent-hover: #3692F5;
+  --blue-soft: #8CCBFF;
+  --blue-glow: rgba(77, 163, 255, 0.18);
+  --blue-subtle: rgba(77, 163, 255, 0.08);
+
+  /* Typography Colors */
+  --text-pure: #FFFFFF;
+  --text-primary: #EBF3FC;
+  --text-secondary: #97B1CB;
+  --text-muted: #577390;
+  --text-faint: #304760;
+
+  /* Line Rules & Borders */
+  --border-subtle: #193552;
+  --border-focus: #4DA3FF;
+
+  /* Functional */
+  --danger-hover: #FF6666;
+  --danger-bg: rgba(255, 102, 102, 0.12);
+
+  /* Typography & Timing */
+  --font-main: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --speed: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+
+/* ==========================================================================
+   Reset & Canvas Base
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  background-color: var(--navy-bg);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding: 3rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle Ambient Glows */
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+  z-index: 0;
+}
+
+.glow-top-right {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(77, 163, 255, 0.07) 0%, rgba(9, 23, 38, 0) 70%);
+  top: -100px;
+  right: -100px;
+}
+
+.glow-bottom-left {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(65, 120, 190, 0.05) 0%, rgba(9, 23, 38, 0) 70%);
+  bottom: -150px;
+  left: -150px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ==========================================================================
+   Structure & Layout Framework (1100px)
+   ========================================================================== */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+
+/* ==========================================================================
+   Top App Bar
+   ========================================================================== */
+.app-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-mark {
+  width: 8px;
+  height: 8px;
+  background-color: var(--blue-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--blue-primary);
+}
+
+.brand-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text-pure);
+}
+
+.accent-dot {
+  color: var(--blue-primary);
+}
+
+.brand-divider {
+  color: var(--border-subtle);
+  font-size: 0.85rem;
+}
+
+.brand-tagline {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.topbar-meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--blue-soft);
+}
+
+.meta-time {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Workspace Grid (Two-Column Editorial/Tech Layout)
+   ========================================================================== */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+/* ==========================================================================
+   Primary Column: Hero & Composer
+   ========================================================================== */
+.primary-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-block {
+  margin-bottom: 2rem;
+}
+
+.hero-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-pure);
+  line-height: 1.2;
+}
+
+.hero-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+
+/* Integrated Custom Composer */
+.task-composer {
+  margin-bottom: 2rem;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  background-color: var(--navy-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.5rem 0.4rem 1.15rem;
+  transition: all var(--speed);
+}
+
+.input-shell:focus-within {
+  border-color: var(--blue-primary);
+  background-color: var(--navy-surface-hover);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
+
+.input-icon {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--blue-primary);
+  margin-right: 0.75rem;
+}
+
+.composer-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-pure);
+  outline: none;
+  padding: 0.5rem 0;
+}
+
+.composer-field::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.composer-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: var(--blue-primary);
+  color: #051321;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--speed), transform var(--speed);
+}
+
+.composer-submit-btn:hover {
+  background-color: var(--blue-accent-hover);
+}
+
+.composer-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.btn-arrow {
+  font-size: 0.9rem;
+  transition: transform var(--speed);
+}
+
+.composer-submit-btn:hover .btn-arrow {
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   Task Feed & Sleek Midnight Rows
+   ========================================================================== */
+.task-feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  padding: 1.05rem 0.6rem;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--speed), opacity var(--speed);
+  animation: taskSlide 200ms ease forwards;
+}
+
+@keyframes taskSlide {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task-row:hover {
+  background-color: var(--navy-row-hover);
+}
+
+.task-order {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  min-width: 22px;
+}
+
+/* Custom Blue Tech Checkbox */
+.checkbox-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-native {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.checkbox-skin {
+  width: 19px;
+  height: 19px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: 5px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--speed);
+}
+
+.checkbox-skin::after {
+  content: "✓";
+  font-size: 11px;
+  font-weight: 700;
+  color: #051321;
+  display: none;
+}
+
+.checkbox-native:checked + .checkbox-skin {
+  border-color: var(--blue-primary);
+  background-color: var(--blue-primary);
+  box-shadow: 0 0 8px var(--blue-glow);
+}
+
+.checkbox-native:checked + .checkbox-skin::after {
+  display: block;
+}
+
+.checkbox-native:focus-visible + .checkbox-skin {
+  outline: 2px solid var(--blue-soft);
+  outline-offset: 2px;
+}
+
+/* Task Text & Completed States */
+.task-content {
+  flex: 1;
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  word-break: break-word;
+  transition: color var(--speed), text-decoration var(--speed);
+}
+
+.task-row.is-done {
+  opacity: 0.45;
+}
+
+.task-row.is-done .task-content {
+  text-decoration: line-through;
+  text-decoration-color: var(--blue-primary);
+  text-decoration-thickness: 1.5px;
+  color: var(--text-secondary);
+}
+
+/* Row Action / Delete */
+.task-delete-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  font-family: var(--font-main);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: all var(--speed);
+}
+
+.task-row:hover .task-delete-btn,
+.task-row:focus-within .task-delete-btn {
+  opacity: 1;
+}
+
+.task-delete-btn:hover {
+  color: var(--danger-hover);
+  background-color: var(--danger-bg);
+}
+
+.task-delete-btn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--danger-hover);
+}
+
+/* ==========================================================================
+   Clean Navy Empty State
+   ========================================================================== */
+.empty-state {
+  text-align: center;
+  padding: 4.5rem 1.5rem;
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.empty-vector {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--navy-surface);
+  color: var(--blue-primary);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-subtle);
+}
+
+.empty-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-pure);
+}
+
+.empty-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   Secondary Column: Analytics & Navigation Panel
+   ========================================================================== */
+.sticky-panel {
+  position: sticky;
+  top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.panel-heading {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.metric-card {
+  background-color: var(--navy-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+}
+
+.metric-number {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--blue-primary);
+  letter-spacing: -0.02em;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-top: 0.4rem;
+}
+
+/* Navigation Filters */
+.filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-link {
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--speed);
+  text-align: left;
+}
+
+.filter-link:hover {
+  background-color: var(--navy-surface);
+  color: var(--text-primary);
+}
+
+.filter-link.is-active {
+  background-color: var(--navy-surface);
+  border-color: var(--border-subtle);
+  color: var(--text-pure);
+  font-weight: 600;
+}
+
+.filter-link.is-active .filter-badge {
+  background-color: var(--blue-subtle);
+  color: var(--blue-primary);
+}
+
+.filter-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  background-color: var(--navy-bg);
+  color: var(--text-muted);
+  transition: all var(--speed);
+}
+
+/* Action Strip */
+.panel-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.25rem;
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.4rem 0.2rem;
+  transition: color var(--speed);
+}
+
+.clear-btn:hover {
+  color: var(--danger-hover);
+}
+
+.clear-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 900px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .secondary-column {
+    order: -1;
+  }
+
+  .sticky-panel {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .panel-footer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  .app-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .brand-divider, .brand-tagline {
+    display: none;
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .sticky-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-list {
+    flex-direction: row;
+  }
+
+  .filter-link {
+    flex: 1;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .task-delete-btn {
+    opacity: 1;
+  }
+}
