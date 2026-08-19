@@ -1,6 +1,6 @@
 /**
  * Noto — Core Application Architecture
- * High-Reliability LocalStorage Engine
+ * High-Reliability Task Management Engine
  */
 
 (function () {
@@ -12,7 +12,7 @@
   let tasks = [];
   let currentFilter = 'all';
 
-  // DOM Handles
+  // DOM Elements
   const taskForm = document.getElementById('task-form');
   const taskInput = document.getElementById('task-input');
   const taskList = document.getElementById('task-list');
@@ -37,73 +37,139 @@
   }
 
   /**
+   * Generates a unique task identifier.
+   * Uses native crypto.randomUUID() when available.
+   * @returns {string}
+   */
+  function generateId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return 'noto_' + crypto.randomUUID();
+    }
+    return 'noto_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+  }
+
+  /**
    * Formats and displays the current date.
    */
   function renderCurrentDate() {
+    if (!currentDateEl) return;
     const now = new Date();
     const options = { weekday: 'short', month: 'short', day: 'numeric' };
     currentDateEl.textContent = now.toLocaleDateString('en-US', options);
   }
 
   /**
-   * Safely reads and parses task data from localStorage.
+   * Reads, validates, and parses task data safely from localStorage.
    */
   function loadTasks() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      tasks = stored ? JSON.parse(stored) : [];
-      if (!Array.isArray(tasks)) tasks = [];
+      if (!stored) {
+        tasks = [];
+        return;
+      }
+
+      const parsed = JSON.parse(stored);
+
+      if (Array.isArray(parsed)) {
+        // Sanitize and validate record structure
+        tasks = parsed.filter(item => {
+          return (
+            item &&
+            typeof item === 'object' &&
+            typeof item.id === 'string' &&
+            typeof item.text === 'string' &&
+            typeof item.completed === 'boolean'
+          );
+        }).map(item => ({
+          id: item.id,
+          text: item.text.trim(),
+          completed: item.completed,
+          createdAt: typeof item.createdAt === 'string' ? item.createdAt : new Date().toISOString()
+        }));
+      } else {
+        tasks = [];
+      }
     } catch (err) {
-      console.warn('Noto: Failed to read from localStorage', err);
+      console.warn('Noto: Failed to read from localStorage. Initializing empty state.', err);
       tasks = [];
     }
   }
 
   /**
-   * Commits the active state to localStorage.
+   * Commits the current tasks state to localStorage.
    */
   function saveTasks() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     } catch (err) {
-      console.warn('Noto: Failed to write to localStorage', err);
+      console.error('Noto: Storage write operation failed.', err);
     }
   }
 
   /**
-   * Attaches event listeners for user inputs and filters.
+   * Attaches core event listeners and delegations.
    */
   function bindEvents() {
-    // Add task via form submission (Enter key + Button)
-    taskForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const text = taskInput.value.trim();
-      if (text.length > 0) {
-        addTask(text);
-        taskInput.value = '';
-        taskInput.focus();
-      }
-    });
+    // Form submission handler
+    if (taskForm && taskInput) {
+      taskForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const cleanText = taskInput.value.trim().replace(/\s+/g, ' ');
+
+        if (cleanText.length > 0) {
+          addTask(cleanText);
+          taskInput.value = '';
+          taskInput.focus();
+        }
+      });
+    }
 
     // Clear completed action
-    clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+    if (clearCompletedBtn) {
+      clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+    }
 
     // Filter switching
     filterLinks.forEach(link => {
       link.addEventListener('click', function () {
         const filter = this.getAttribute('data-filter');
-        setFilter(filter);
+        if (filter) {
+          setFilter(filter);
+        }
       });
     });
+
+    // Event delegation on task list for toggle and delete actions
+    if (taskList) {
+      taskList.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('checkbox-native')) {
+          const row = e.target.closest('.task-row');
+          if (row && row.dataset.id) {
+            toggleTask(row.dataset.id);
+          }
+        }
+      });
+
+      taskList.addEventListener('click', function (e) {
+        const deleteButton = e.target.closest('.task-delete-btn');
+        if (deleteButton) {
+          const row = deleteButton.closest('.task-row');
+          if (row && row.dataset.id) {
+            deleteTask(row.dataset.id);
+          }
+        }
+      });
+    }
   }
 
   /**
-   * Adds a new task object to the state ledger.
+   * Adds a new task to the collection.
    * @param {string} text 
    */
   function addTask(text) {
     const newTask = {
-      id: 'noto_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+      id: generateId(),
       text: text,
       completed: false,
       createdAt: new Date().toISOString()
@@ -115,18 +181,16 @@
   }
 
   /**
-   * Toggles task completion state.
+   * Toggles task completion state by ID.
    * @param {string} id 
    */
   function toggleTask(id) {
-    tasks = tasks.map(t => {
-      if (t.id === id) {
-        return Object.assign({}, t, { completed: !t.completed });
-      }
-      return t;
-    });
-    saveTasks();
-    render();
+    const taskIndex = tasks.findIndex(t => t.id === id);
+    if (taskIndex !== -1) {
+      tasks[taskIndex].completed = !tasks[taskIndex].completed;
+      saveTasks();
+      render();
+    }
   }
 
   /**
@@ -134,39 +198,46 @@
    * @param {string} id 
    */
   function deleteTask(id) {
+    const initialLength = tasks.length;
     tasks = tasks.filter(t => t.id !== id);
-    saveTasks();
-    render();
+
+    if (tasks.length !== initialLength) {
+      saveTasks();
+      render();
+    }
   }
 
   /**
-   * Removes all resolved/completed tasks.
+   * Removes all completed tasks.
    */
   function clearCompletedTasks() {
-    const hasCompleted = tasks.some(t => t.completed);
-    if (!hasCompleted) return;
-
+    const initialLength = tasks.length;
     tasks = tasks.filter(t => !t.completed);
-    saveTasks();
-    render();
+
+    if (tasks.length !== initialLength) {
+      saveTasks();
+      render();
+    }
   }
 
   /**
-   * Updates filter state and active button styling.
+   * Updates current filter and syncs tab UI accessibility attributes.
    * @param {string} filter 
    */
   function setFilter(filter) {
     currentFilter = filter;
+
     filterLinks.forEach(link => {
       const isActive = link.getAttribute('data-filter') === filter;
       link.classList.toggle('is-active', isActive);
       link.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
+
     render();
   }
 
   /**
-   * Filters the tasks array according to the current selection.
+   * Returns tasks matching the active filter.
    * @returns {Array}
    */
   function getFilteredTasks() {
@@ -180,23 +251,31 @@
   }
 
   /**
-   * Updates task statistics and filter badges.
+   * Updates all metrics and sidebar counter badges in a single pass.
    */
   function updateCounters() {
+    let activeTotal = 0;
+    let completedTotal = 0;
+
+    for (let i = 0; i < tasks.length; i++) {
+      if (tasks[i].completed) {
+        completedTotal++;
+      } else {
+        activeTotal++;
+      }
+    }
+
     const allTotal = tasks.length;
-    const activeTotal = tasks.filter(t => !t.completed).length;
-    const completedTotal = tasks.filter(t => t.completed).length;
 
-    activeCountEl.textContent = activeTotal;
-    completedCountEl.textContent = completedTotal;
-
-    countAllEl.textContent = allTotal;
-    countActiveEl.textContent = activeTotal;
-    countCompletedEl.textContent = completedTotal;
+    if (activeCountEl) activeCountEl.textContent = activeTotal;
+    if (completedCountEl) completedCountEl.textContent = completedTotal;
+    if (countAllEl) countAllEl.textContent = allTotal;
+    if (countActiveEl) countActiveEl.textContent = activeTotal;
+    if (countCompletedEl) countCompletedEl.textContent = completedTotal;
   }
 
   /**
-   * Creates an individual task list element.
+   * Creates a DOM element for a task row without innerHTML interpolation.
    * @param {Object} task 
    * @param {number} index
    * @returns {HTMLElement}
@@ -204,14 +283,14 @@
   function createTaskElement(task, index) {
     const li = document.createElement('li');
     li.className = 'task-row' + (task.completed ? ' is-done' : '');
-    li.id = task.id;
+    li.dataset.id = task.id;
 
     // Numerical index
     const orderSpan = document.createElement('span');
     orderSpan.className = 'task-order';
     orderSpan.textContent = String(index + 1).padStart(2, '0');
 
-    // Custom checkbox wrapper
+    // Custom Checkbox Container
     const checkShell = document.createElement('label');
     checkShell.className = 'checkbox-shell';
 
@@ -220,7 +299,6 @@
     checkNative.className = 'checkbox-native';
     checkNative.checked = task.completed;
     checkNative.setAttribute('aria-label', `Mark "${task.text}" as ${task.completed ? 'active' : 'completed'}`);
-    checkNative.addEventListener('change', () => toggleTask(task.id));
 
     const checkSkin = document.createElement('span');
     checkSkin.className = 'checkbox-skin';
@@ -228,18 +306,17 @@
     checkShell.appendChild(checkNative);
     checkShell.appendChild(checkSkin);
 
-    // Text content
+    // Text Content
     const textSpan = document.createElement('span');
     textSpan.className = 'task-content';
     textSpan.textContent = task.text;
 
-    // Delete action button
+    // Delete Button
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'task-delete-btn';
     deleteBtn.textContent = 'Remove';
-    deleteBtn.setAttribute('aria-label', `Delete "${task.text}"`);
-    deleteBtn.addEventListener('click', () => deleteTask(task.id));
+    deleteBtn.setAttribute('aria-label', `Delete task: "${task.text}"`);
 
     li.appendChild(orderSpan);
     li.appendChild(checkShell);
@@ -256,20 +333,28 @@
     updateCounters();
 
     const filtered = getFilteredTasks();
-    taskList.innerHTML = '';
+
+    if (!taskList) return;
+    taskList.textContent = ''; // Fast child cleanup
 
     if (filtered.length === 0) {
-      emptyState.removeAttribute('hidden');
+      if (emptyState) emptyState.removeAttribute('hidden');
     } else {
-      emptyState.setAttribute('hidden', 'true');
+      if (emptyState) emptyState.setAttribute('hidden', 'true');
       const fragment = document.createDocumentFragment();
+
       filtered.forEach((task, idx) => {
         fragment.appendChild(createTaskElement(task, idx));
       });
+
       taskList.appendChild(fragment);
     }
   }
 
-  // Run on DOM ready
-  document.addEventListener('DOMContentLoaded', init);
+  // Execute initialization when document structure is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
